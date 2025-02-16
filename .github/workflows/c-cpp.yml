@@ -10,7 +10,12 @@ jobs:
   build:
     strategy:
       matrix:
-        os:  [ubuntu-latest, ubuntu-20.04, ubuntu-18.04, debian-11, debian-10, debian-9, debian-8]
+        os:  [
+          ubuntu-latest, ubuntu-20.04, ubuntu-18.04,
+          debian-11, debian-10, debian-9, debian-8,
+          fedora-39, fedora-38, fedora-37, fedora-36,  # Fedora
+          centos-stream-9, centos-stream-8, rocky-linux-9, rocky-linux-8 # RHEL-likes
+        ]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -19,25 +24,32 @@ jobs:
         run: |
           if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
             sudo apt-get update
-            sudo apt-get install -y linux-headers-generic # Or specific headers if needed
+            sudo apt-get install -y linux-headers-generic
           elif [[ "${{ matrix.os }}" == "ubuntu-20.04" ]]; then
             sudo apt-get update
             sudo apt-get install -y linux-headers-$(uname -r)
           elif [[ "${{ matrix.os }}" == "ubuntu-18.04" ]]; then
             sudo apt-get update
             sudo apt-get install -y linux-headers-$(uname -r)
-          elif [[ "${{ matrix.os }}" == "debian-11" ]]; then # Debian 11 (Bullseye)
+          elif [[ "${{ matrix.os }}" == "debian-11" ]]; then
             sudo apt-get update
             sudo apt-get install -y linux-headers-$(uname -r)
-          elif [[ "${{ matrix.os }}" == "debian-10" ]]; then # Debian 10 (Buster)
+          elif [[ "${{ matrix.os }}" == "debian-10" ]]; then
             sudo apt-get update
             sudo apt-get install -y linux-headers-$(uname -r)
-          elif [[ "${{ matrix.os }}" == "debian-9" ]]; then # Debian 9 (Stretch)
+          elif [[ "${{ matrix.os }}" == "debian-9" ]]; then
             sudo apt-get update
             sudo apt-get install -y linux-headers-$(uname -r)
-          elif [[ "${{ matrix.os }}" == "debian-8" ]]; then # Debian 8 (Jessie) - Might be very old
+          elif [[ "${{ matrix.os }}" == "debian-8" ]]; then
             sudo apt-get update
             sudo apt-get install -y linux-headers-$(uname -r)
+          elif [[ "${{ matrix.os }}" == "fedora-39" || "${{ matrix.os }}" == "fedora-38" || "${{ matrix.os }}" == "fedora-37" || "${{ matrix.os }}" == "fedora-36" ]]; then  # Fedora
+            sudo dnf -y install kernel-headers
+            # Fedora often needs development tools
+            sudo dnf -y groupinstall "Development Tools"
+          elif [[ "${{ matrix.os }}" == "centos-stream-9" || "${{ matrix.os }}" == "centos-stream-8" || "${{ matrix.os }}" == "rocky-linux-9" || "${{ matrix.os }}" == "rocky-linux-8" ]]; then  # RHEL-likes
+            sudo dnf -y install kernel-devel # Use kernel-devel on RHEL-based
+            sudo dnf -y groupinstall "Development Tools" # Often needed
           fi
       - name: Make (${{ matrix.os }})
         run: make
