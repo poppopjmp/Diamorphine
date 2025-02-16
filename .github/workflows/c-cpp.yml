@@ -32,4 +32,8 @@ jobs:
           fi
       - name: Make (${{ matrix.os }})
         run: make
-
+      - name: Upload Artifacts (${{ matrix.os }})
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-${{ matrix.os }}
+          path: diamorphine/* # Replace with the actual path
