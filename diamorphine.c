@@ -28,7 +28,7 @@
 #ifndef __NR_getdents
 #define __NR_getdents 141
 #endif
-// To change 
+ 
 #include "diamorphine.h"
 
 #if IS_ENABLED(CONFIG_X86) || IS_ENABLED(CONFIG_X86_64)
@@ -379,7 +379,7 @@ unprotect_memory(void)
 			section_size, PAGE_KERNEL);
 #endif
 }
-// To change
+
 static int __init
 diamorphine_init(void)
 {
