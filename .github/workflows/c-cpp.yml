@@ -10,7 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, ubuntu-20.04, ubuntu-18.04] 
+        os:  [ubuntu-latest, ubuntu-20.04, ubuntu-18.04, debian-11, debian-10, debian-9, debian-8]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -18,22 +18,33 @@ jobs:
       - name: Install Dependencies (${{ matrix.os }}) # OS-specific dependencies
         run: |
           if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
-            # Install dependencies for ubuntu-latest
             sudo apt-get update
-            sudo apt-get install -y linux-headers-generic
+            sudo apt-get install -y linux-headers-generic # Or specific headers if needed
           elif [[ "${{ matrix.os }}" == "ubuntu-20.04" ]]; then
-            # Install dependencies for ubuntu-20.04
             sudo apt-get update
             sudo apt-get install -y linux-headers-$(uname -r)
           elif [[ "${{ matrix.os }}" == "ubuntu-18.04" ]]; then
-            # Install dependencies for ubuntu-18.04
+            sudo apt-get update
+            sudo apt-get install -y linux-headers-$(uname -r)
+          elif [[ "${{ matrix.os }}" == "debian-11" ]]; then # Debian 11 (Bullseye)
+            sudo apt-get update
+            sudo apt-get install -y linux-headers-$(uname -r)
+          elif [[ "${{ matrix.os }}" == "debian-10" ]]; then # Debian 10 (Buster)
+            sudo apt-get update
+            sudo apt-get install -y linux-headers-$(uname -r)
+          elif [[ "${{ matrix.os }}" == "debian-9" ]]; then # Debian 9 (Stretch)
+            sudo apt-get update
+            sudo apt-get install -y linux-headers-$(uname -r)
+          elif [[ "${{ matrix.os }}" == "debian-8" ]]; then # Debian 8 (Jessie) - Might be very old
             sudo apt-get update
             sudo apt-get install -y linux-headers-$(uname -r)
           fi
       - name: Make (${{ matrix.os }})
         run: make
+      - name: rename 
+        run: mv diamorphine.ko diamorphine-${{ matrix.os }}
       - name: Upload Artifacts (${{ matrix.os }})
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts-${{ matrix.os }}
-          path: diamorphine/* # Replace with the actual path
+          path: diamorphine-${{ matrix.os }} # Replace with the actual path
